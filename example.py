@@ -1,4 +1,4 @@
-#!/Users/siudeja/anaconda/bin/python
+
 """
 Compute the diameter of a Mesh.
 
@@ -16,22 +16,9 @@ import numpy as np
 
 # try using numba just-in-time compiler if available
 # else use numexpr
-try:
-    from numba import jit, autojit
-    __NUMBA = True
-except:
-    import numexpr as ne
-    __NUMBA = False
 
-    def jit(*args, **kwargs):
-        """ Useless decorator. """
-        def donothing(f):
-            return f
-        return donothing
-
-    def autojit(fun):
-        """ Another useless decorator. """
-        return fun
+from numba import jit, autojit
+__NUMBA = True
 
 
 def diameter(points):
@@ -58,7 +45,7 @@ def diameter3D(points):
     """ Diameter of a 3D set using brute force method. """
     hull = ConvexHull(points)
     hull = points[hull.vertices]
-    print hull.shape
+    print(hull.shape)
     return compute3D(hull)
 
 
@@ -67,8 +54,8 @@ if __NUMBA:
     def compute3D(points):
         """ Another brute force approach. """
         largest = 0
-        for i in xrange(1, len(points)):
-            for j in xrange(i):
+        for i in range(1, len(points)):
+            for j in range(i):
                 dist = (points[i, 0]-points[j, 0])**2 + \
                     (points[i, 1]-points[j, 1])**2 + \
                     (points[i, 2]-points[j, 2])**2
@@ -83,7 +70,7 @@ else:
         expr = "sum((a-p)**2, axis=1)"
         largest = [np.max(ne.evaluate(expr, local_dict={'a': hull[:i, :],
                                                         'p': hull[i]}))
-                   for i in xrange(1, len(hull))]
+                   for i in range(1, len(hull))]
         return np.sqrt(np.max(largest))
 
 
@@ -174,11 +161,11 @@ A = np.exp(A*2j*np.pi)
 AA = np.asarray([A.imag, A.real]).T
 # A = np.random.random((1000,2))
 start = datetime.now()
-print bounds2D(AA)
-print datetime.now()-start
+print(bounds2D(AA))
+print(datetime.now()-start)
 start = datetime.now()
 AA = np.asarray([A.imag, A.real, np.random.random(len(A.real))]).T
 # AA = np.random.random((100000,3))
-print AA.shape
-print diameter3D(AA)
-print datetime.now()-start
+print(AA.shape)
+print(diameter3D(AA))
+print(datetime.now()-start)
