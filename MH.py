@@ -1,24 +1,25 @@
 from math import exp
 from random import random
+import numpy as np
 
 
 def minimize(func):
+    def to_maximize(*args, **kwargs):
+        value = func(*args, **kwargs)
+        return -value
+    return to_maximize
+
+
+def maximize(func):
     def do_nothing(*args, **kwargs):
         value = func(*args, **kwargs)
         return value
     return do_nothing
 
 
-def maximize(func):
-    def to_minimize(*args, **kwargs):
-        value = func(*args, **kwargs)
-        return -value
-    return to_minimize
-
-
 class optimizer(object):
     """ 
-    Metropolis-Hastings optimizer based on random walk
+    Metropolis-Hastings optimizer based on random walk (maximize objective function)
     """
     def __init__(self, obj_func, trans_func, beta, init_state, **kwargs):
         self.beta = beta
@@ -46,5 +47,20 @@ class optimizer(object):
         return self.state, self.obj_val
 
     def accpet(self, j, i):
-        rate = min(1, exp(-self.beta * (j - i)))
+        rate = min(1, exp(self.beta * (j - i)))
         return rate
+    
+    def run(self, iters=100, beta_schedule=None, reset=True):
+        if reset:
+            self.reset()
+        val = []
+        num_cities = []
+        for i in range(iters):
+            if beta_schedule is not None:
+                interval = iters // len(beta_schedule)
+                beta_i = i // interval
+                self.beta = beta_schedule[beta_i]
+            curr_state, curr_val = self.step()
+            val.append(curr_val)
+            num_cities.append(np.sum(curr_state))
+        return val, num_cities
