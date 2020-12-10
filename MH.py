@@ -53,14 +53,14 @@ class optimizer(object):
     def run(self, iters=100, beta_schedule=None, reset=True):
         if reset:
             self.reset()
-        val = []
-        num_cities = []
+        vals = []
+        states = []
         for i in range(iters):
             if beta_schedule is not None:
                 interval = iters // len(beta_schedule)
                 beta_i = i // interval
                 self.beta = beta_schedule[beta_i]
             curr_state, curr_val = self.step()
-            val.append(curr_val)
-            num_cities.append(np.sum(curr_state))
-        return val, num_cities
+            vals.append(curr_val)
+            states.append(curr_state)
+        return vals, states
