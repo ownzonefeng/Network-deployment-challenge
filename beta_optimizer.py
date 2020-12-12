@@ -1,3 +1,8 @@
+"""
+Team name: ThE raNDom WALkERS
+Members: Jonathan Doenz, Wentao Feng, Yuxuan Wang
+"""
+
 import numpy as np
 import scipy as sp
 

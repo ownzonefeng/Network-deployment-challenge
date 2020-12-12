@@ -1,2 +1,4 @@
 # Network-deployment-challenge
-Project for EPFL COM-516 MCAA
+__Teamname:__ ThE raNDom WALkERS
+
+__Members:__ Jonathan Doenz, Wentao Feng, Yuxuan Wang
