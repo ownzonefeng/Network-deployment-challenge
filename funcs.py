@@ -30,7 +30,7 @@ def interpBetas(betas, steps, smooth=True):
     if steps <= len(betas):
         return betas
     # least square
-    x = np.linspace(0, steps - 1, num=len(betas), endpoint=False)
+    x = np.linspace(0, steps - 1, num=len(betas), endpoint=True)
     A = np.vstack([x, np.ones(len(x))]).T
     y = np.log(betas)
     coef, _, _, _ = np.linalg.lstsq(A, y, rcond=None)
@@ -38,11 +38,9 @@ def interpBetas(betas, steps, smooth=True):
     if smooth:
         return smoothed
     # interpolation
-    betas_new = betas.copy()
-    betas_new.append(smoothed[-1])
-    xp = np.linspace(0, steps - 1, num=len(betas_new))
+    xp = np.linspace(0, steps - 1, num=len(betas))
     xp = np.int32(xp)
-    beta_full =  np.interp(np.arange(steps), xp, betas_new)
+    beta_full =  np.interp(np.arange(steps), xp, betas)
     return beta_full
 
 @maximize
