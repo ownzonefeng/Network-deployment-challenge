@@ -4,10 +4,10 @@ Members: Jonathan Doenz, Wentao Feng, Yuxuan Wang
 """
 
 import math, random
-
 import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
 from funcs import getOptBetaSeq, interpBetas
+from dataset import G1, G2
 
 def minimize(func):
     def to_maximize(*args, **kwargs):
@@ -96,17 +96,20 @@ def transition(state):
     new_state[ind] = not state[ind]
     return new_state
 
-def demo_run(dataset_generator: str, lambda_: float):
+def demo_run(gname: str = 'G1', lambda_: float = 1):
     num_iters = 2000
+    datasets = {'G1': G1(100), 'G2': G2(100)}
+    G = datasets[gname]
 
-    beta_sequence = getOptBetaSeq(dataset_generator, lambda_)
+    beta_sequence = getOptBetaSeq(gname, lambda_)
     beta_interp = interpBetas(beta_sequence, num_iters, smooth=False)
     beta = beta_interp[0]
 
-    inputs = {'v': dataset_generator.v, 'x': dataset_generator.x, 'lam': lambda_}
-    init_state = np.random.randint(0, 2, size=len(dataset_generator.v), dtype=bool)
+    inputs = {'v': G.v, 'x': G.x, 'lam': lambda_}
+    init_state = np.random.randint(0, 2, size=len(G.v), dtype=bool)
     optim = optimizer(objective, transition, beta, init_state, **inputs)
 
     val, num_cities = optim.run(iters=num_iters, beta_schedule=beta_interp, reset=True)
-    num_cities = np.sum(num_cities, axis=1)
-    return val, num_cities
+    max_ind = np.argmax(val)
+    chosen_cities = np.where(num_cities[max_ind] == 1)
+    return chosen_cities
