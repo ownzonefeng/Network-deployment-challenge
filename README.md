@@ -21,8 +21,8 @@ conda env create -f environment.yml
 ### Simple demonstration
 ```python
 from MH import demo_run
-demo('G1', lambda_=1)
-demo('G2', lambda_=1.5)
+demo_run('G1', lambda_=1)
+demo_run('G2', lambda_=1.5)
 ```
 ### Exploratory process (recommended)
 ```shell
@@ -30,13 +30,13 @@ jupyter notebook model.ipynb
 ```
 ## Modules explanation
 ### `model.ipynb`
-The whole optimisation process is in the notebook with visualizations, but you can find a minimal demonstration function in the `MH.py`.
+The whole optimization process is in the notebook with visualizations, but users can find a minimal demonstration function in the `MH.py`.
 
 ### `MH.py`
-This file has an implementaion Metropolis-Hastings algorithm, objective function, state transition definition, a demonstration funtion.
+This file has an implementation Metropolis-Hastings algorithm, objective function, state transition definition, a demonstration function.
 
 ### `beta_optimizer.py`
-Our optimization method for finding best beta.
+Our optimization method for finding the best beta.
 
 ### `funcs.py`
 Some functions for processing data and outputs.
