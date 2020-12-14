@@ -77,6 +77,10 @@ def objective(v, x, lam, state):
     n = len(indicator)
 
     def diameter(array):
+        if len(array) <= 1:
+            return 0
+        if len(array) <= 128:
+            return np.max(distance_matrix(array, array))
         hull = ConvexHull(array, incremental=False)
         edges = array[hull.vertices]
         diam = np.max(distance_matrix(edges, edges))
