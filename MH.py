@@ -8,6 +8,7 @@ import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
 from funcs import getOptBetaSeq, interpBetas
 from dataset import G1, G2
+from tqdm import trange
 
 def minimize(func):
     def to_maximize(*args, **kwargs):
@@ -53,15 +54,17 @@ class optimizer(object):
         return self.state, self.obj_val
 
     def accpet(self, j, i):
-        rate = min(1, math.exp(self.beta * (j - i)))
-        return rate
+        if self.beta * (j - i) >= 0:
+            return 1
+        else:
+            return math.exp(self.beta * (j - i))
     
     def run(self, iters=100, beta_schedule=None, reset=True):
         if reset:
             self.reset()
         vals = []
         states = []
-        for i in range(iters):
+        for i in trange(iters):
             if beta_schedule is not None:
                 interval = iters // len(beta_schedule)
                 beta_i = i // interval
