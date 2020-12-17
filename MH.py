@@ -62,17 +62,18 @@ class optimizer(object):
     def run(self, iters=100, beta_schedule=None, reset=True):
         if reset:
             self.reset()
-        vals = []
-        states = []
+        val = -float('inf')
+        states = np.ones_like(self._init_state)
         for i in trange(iters):
             if beta_schedule is not None:
                 interval = iters // len(beta_schedule)
                 beta_i = i // interval
                 self.beta = beta_schedule[beta_i]
             curr_state, curr_val = self.step()
-            vals.append(curr_val)
-            states.append(curr_state)
-        return vals, states
+            if curr_val  > val:
+                val = curr_val
+                states = curr_state
+        return val, states
 
 @maximize
 def objective(v, x, lam, state):
